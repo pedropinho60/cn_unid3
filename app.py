@@ -11,7 +11,7 @@ from methods import (
     geometric_regression,
     power_regression,
     logarithmic_regression,
-    polinomial_regression
+    quadratic_regression
 )
 
 # FUNÇÕES DE AJUSTE MMQ
@@ -105,9 +105,9 @@ def rodar_ajustes(df, eixo_y):
         resultados["Geométrico"] = {"coef": coef, "y_pred": y_pred, "r2": r2_score(y, y_pred)}
 
     coef = _linear_regression_base(x, y)
-    lq = polinomial_regression(x, y)
+    lq = quadratic_regression(x, y)
     y_pred = lq(x)
-    resultados["Polinomial"] = {"coef": coef, "y_pred": y_pred, "r2": r2_score(y, y_pred)}
+    resultados["Quadrático"] = {"coef": coef, "y_pred": y_pred, "r2": r2_score(y, y_pred)}
 
     return resultados
 
@@ -117,7 +117,7 @@ def plotar_ajuste_individual(df, eixo_y, nome, res):
 
     fig, ax = plt.subplots(figsize=(8,4))
     ax.scatter(x, y, label="Dados Reais", color="black")
-    ax.plot(x, res["y_pred"], label=f"{nome} (R²={res['r2']:.3f})", color="red")
+    ax.plot(x, res["y_pred"], label=f"{nome} (R²={res['r2']:.4f})", color="red")
     ax.set_xlabel("Ano")
     ax.set_ylabel(eixo_y)
     ax.set_title(f"Ajuste: {nome}")
@@ -133,7 +133,7 @@ def plotar_ajustes(df, eixo_y, resultados, titulo):
     ax.scatter(x, y, label="Dados Reais", color="black")
 
     for nome, res in resultados.items():
-        ax.plot(x, res["y_pred"], label=f"{nome} (R²={res['r2']:.3f})")
+        ax.plot(x, res["y_pred"], label=f"{nome} (R²={res['r2']:.4f})")
 
     ax.set_xlabel("Ano")
     ax.set_ylabel(eixo_y)
@@ -155,7 +155,7 @@ def prever_futuro(df, nome_ajuste, ano_futuro):
         "Logarítmico": logarithmic_regression,
         "Potência": power_regression,
         "Geométrico": geometric_regression,
-        "Polinomial": polinomial_regression
+        "Quadrático": quadratic_regression
     }
 
     regression = methods[nome_ajuste]
@@ -218,6 +218,9 @@ ano_futuro = st.slider("Escolha o ano para previsão", min_value=df["Ano"].max()
 
 pred = prever_futuro(df, melhor_nome, ano_futuro)
 if pred is not None:
-    st.markdown(f"Previsão para {ano_futuro}: **{pred:.3f} {eixo_y.split(' ')[0]}** em relação aos 30 anos anteriores")
+    if tipo_dado == "CO₂ Atmosférico (NOAA)":
+        st.markdown(f"Previsão para {ano_futuro}: **{pred:.4f} ppm CO₂**")
+    else:
+        st.markdown(f"Previsão para {ano_futuro}: **{pred:.4f} °C**")
 else:
     st.markdown("Previsão indisponível para este modelo e ano.")

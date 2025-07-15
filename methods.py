@@ -98,7 +98,7 @@ def lu_method(A, b):
 
     return x
 
-def polinomial_regression(x_points: np.ndarray, y_points: np.ndarray) -> Callable[[float], float]:
+def quadratic_regression(x_points: np.ndarray, y_points: np.ndarray) -> Callable[[float], float]:
     n = x_points.size
     if n == 0:
         raise ValueError("x_points array cannot be empty")
