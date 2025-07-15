@@ -190,7 +190,7 @@ else:
     eixo_y = "Temperatura (°C)"
     titulo = "Anomalia da Temperatura Global (°C)"
 
-st.subheader("Dados Brutos")
+st.subheader("Dados brutos")
 st.dataframe(df)
 
 st.subheader("Ajustes via mínimos quadrados")
